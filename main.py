@@ -2,7 +2,6 @@ import argparse
 import detection
 import cv2
 
-
 # create parser
 parser = argparse.ArgumentParser()
 
@@ -21,3 +20,5 @@ cv2.imshow("questions", question)
 cv2.imshow("answer", image)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+
+#python main.py "images/sudoku5.jpeg"

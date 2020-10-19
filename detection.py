@@ -333,4 +333,3 @@ def run_detection(sudoku_image):
     answer_matrix = print_solution(digits, cropped, ans)
     """answer_matrix: answered image of sudoku"""
     return answer_matrix
-

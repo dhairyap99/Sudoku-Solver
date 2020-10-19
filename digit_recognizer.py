@@ -60,17 +60,6 @@ for category in CATEGORIES:
         training_data.append([resized_array, class_num])
 print(len(training_data))
 
-fig = plt.figure(figsize=(9, 8))
-rows, columns = 5, 10
-ax = []
-for i in range(columns * rows):
-    # create subplot and append to ax
-    ax.append(fig.add_subplot(rows, columns, i + 1))
-    ax[-1].set_title("ax:" + str(i))  # set title
-    plt.imshow(training_data[6000 + i][0], cmap='gray')
-    plt.axis("off")
-plt.show()
-
 random.shuffle(training_data)
 
 X = []
@@ -114,4 +103,4 @@ print('Test loss:', score[0])
 print('Test accuracy:', score[1])
 
 model.save('models/model2.hdf5')
-model.save_weights('models/digitRecognition2.h5')
+#model.save_weights('models/digitRecognition2.h5')

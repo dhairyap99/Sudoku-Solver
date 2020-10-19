@@ -3,7 +3,6 @@ from pprint import pprint
 
 """main function size=size of subblock"""
 
-
 def solve_sudoku(size, grid):
     R, C = size
     N = R * C
@@ -67,10 +66,7 @@ def solve_sudoku(size, grid):
             grid[r][c] = n
         yield grid
 
-
 """create dictionary X such that X(key:value) is Y(value:key)"""
-
-
 def exact_cover(X, Y):
     X = {j: set() for j in X}
     for i, row in Y.items():
@@ -78,9 +74,7 @@ def exact_cover(X, Y):
             X[j].add(i)
     return X, Y
 
-
 """algorithm X backtracking"""
-
 
 def solve(X, Y, solution):
     """check if X is empty or not.
@@ -105,7 +99,6 @@ def solve(X, Y, solution):
             deselect(X, Y, r, cols)
             solution.pop()
 
-
 def select(X, Y, r):
     cols = []
     for j in Y[r]:
@@ -116,7 +109,6 @@ def select(X, Y, r):
         cols.append(X.pop(j))
     return cols
 
-
 def deselect(X, Y, r, cols):
     for j in reversed(Y[r]):
         X[j] = cols.pop()
@@ -124,7 +116,6 @@ def deselect(X, Y, r, cols):
             for k in Y[i]:
                 if k != j:
                     X[k].add(i)
-
 
 """
 matrix = [
