@@ -16,8 +16,8 @@ question = cv2.resize(question, (381,381))
 
 image = detection.run_detection(args.language)
 
-cv2.imshow("questions", question)
-cv2.imshow("answer", image)
+cv2.imshow("Question", question)
+cv2.imshow("Soluiton", image)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
