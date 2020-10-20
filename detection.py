@@ -115,72 +115,79 @@ def scale_and_centre(img, size, margin=0, background=0):
 
     def centre_pad(length):
         """Handles centering for a given length that may be odd or even."""
-        if length % 2 == 0:
-            side1 = int((size - length) / 2)
-            side2 = side1
-        else:
-            side1 = int((size - length) / 2)
-            side2 = side1 + 1
+        # if length % 2 == 0:
+        side1 = int((size - length) / 2)
+        side2 = side1
+        # else:
+        #     side1 = int((size - length) / 2)
+        #     side2 = side1 + 1
         return side1, side2
 
-    def scale(r, x):
-        return int(r * x)
-
     """below code is used to create border around every grid """
-    if h > w:
-        t_pad = int(margin / 2)  # top border width
-        b_pad = t_pad  # bottom border width
-        ratio = (size - margin) / h
-        w, h = scale(ratio, w), scale(ratio, h)
-        l_pad, r_pad = centre_pad(w)  # left and right border width
-    else:
-        l_pad = int(margin / 2)
-        r_pad = l_pad
-        ratio = (size - margin) / w
-        w, h = scale(ratio, w), scale(ratio, h)
-        t_pad, b_pad = centre_pad(h)
 
-    print("..........w:", w, " h:", h, " size:", size, ".................")
-    img = cv2.resize(img, (w, h))
+    t_pad = int(margin / 2)  # top border width
+    b_pad = t_pad  # bottom border width
+    l_pad, r_pad = centre_pad(w)  # left and right border width
+
+    print("..........w:", w, " h:", h, " size:", size, " ", margin, ".................")
+    # img = cv2.resize(img, (w, h))
     """copyMakeBorder is for creating border around the image and grids of sudoku"""
+    # show_image(img)
     img = cv2.copyMakeBorder(img, t_pad, b_pad, l_pad, r_pad, cv2.BORDER_CONSTANT, None, background)
+    # show_image(img)
     return cv2.resize(img, (size, size))
 
 
 def find_largest_feature(inp_img, scan_tl=None, scan_br=None):
-    img = inp_img.copy()
+    """
+        Uses the fact the `floodFill` function returns a bounding box of the area it filled to find the biggest
+        connected pixel structure in the image. Fills this structure in white, reducing the rest to black.
+    """
+    img = inp_img.copy()  # copy so that no change is made to input image
     height, width = img.shape[:2]
-    max_area = 0
-    seed_point = (None, None)
+    max_area = 0  # this will store the area of the digit
+    seed_point = (None, None)  # seed point for floodfill function to colour the digit white
+    # show_image(img)
+    """below codes find the location of the digit. seed point of the digit"""
     if scan_tl is None:
-        scan_tl = [0, 0]
+        scan_tl = [0, 0]  # top left point of grid
     if scan_br is None:
-        scan_br = [width, height]
-    for x in range(scan_tl[0], scan_br[0]):
-        for y in range(scan_tl[1], scan_br[1]):
-            if img.item(y, x) == 255 and x < width and y < height:
-                area = cv2.floodFill(img, None, (x, y), 64)
-                if area[0] > max_area:
-                    max_area = area[0]
-                    seed_point = (x, y)
+        scan_br = [width, height]  # bottom right corner of grid
+    for x in range(scan_tl[0], scan_br[0]):  # scan all X coord
+        for y in range(scan_tl[1], scan_br[1]):  # scan all Y coord
+            if img.item(y, x) == 255 and x < width and y < height:  # checks if the pixel is white or not
+                area = cv2.floodFill(img, None, (x, y), 64)  # flood fill returns area of the filled shape
+                if area[0] > max_area:  # checks if area returned by floodfill is max or not
+                    max_area = area[0]  # max_area for digit
+                    seed_point = (x, y)  # seed point: point inside digit
+    # show_image(img)
+    """this code colors rest of the white pixels to gray (pixels not part of digit)"""
     for x in range(width):
         for y in range(height):
             if img.item(y, x) == 255 and x < width and y < height:
                 cv2.floodFill(img, None, (x, y), 64)
-    mask = np.zeros((height + 2, width + 2), np.uint8)
+    # show_image(img)
+    mask = np.zeros((height + 2, width + 2), np.uint8)  # mask is 2 pixel bigger than the image
+
+    """this code will make the digits white again using flood fill and seed calculated"""
     if all([p is not None for p in seed_point]):
         cv2.floodFill(img, mask, seed_point, 255)
+
+    # show_image(mask)
     top, bottom, left, right = height, 0, width, 0
     for x in range(width):
         for y in range(height):
+            """digit is already white. so rest of the grey stuff is not needed. """
             if img.item(y, x) == 64:
                 cv2.floodFill(img, mask, (x, y), 0)
+            """to find the bounding box of digits"""
             if img.item(y, x) == 255:
                 top = y if y < top else top
                 bottom = y if y > bottom else bottom
                 left = x if x < left else left
                 right = x if x > right else right
     bbox = [[left, top], [right, bottom]]
+    # show_image(mask)
     return img, np.array(bbox, dtype='float32'), seed_point
 
 
@@ -283,6 +290,7 @@ def get_sudoku(sudoku_image):
     method_return = detect_sudoku(sudoku_image)
     """digits : grids of numbers present in the image, matrix is predicted numbers"""
     matrix, digits, cropped = method_return  # cropped sudoku with changed and warped perspective
+    # show_image(digits)
     print("matrix")
     matrix = matrix.tolist()
     answer = []
