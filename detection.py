@@ -138,7 +138,7 @@ def scale_and_centre(img, size, margin=0, background=0):
     return cv2.resize(img, (size, size))
 
 
-def find_largest_feature(inp_img, scan_tl=None, scan_br=None):
+def find_largest_feature(inp_img, scan_tl, scan_br):
     """
         Uses the fact the `floodFill` function returns a bounding box of the area it filled to find the biggest
         connected pixel structure in the image. Fills this structure in white, reducing the rest to black.
@@ -149,10 +149,7 @@ def find_largest_feature(inp_img, scan_tl=None, scan_br=None):
     seed_point = (None, None)  # seed point for floodfill function to colour the digit white
     # show_image(img)
     """below codes find the location of the digit. seed point of the digit"""
-    if scan_tl is None:
-        scan_tl = [0, 0]  # top left point of grid
-    if scan_br is None:
-        scan_br = [width, height]  # bottom right corner of grid
+   
     for x in range(scan_tl[0], scan_br[0]):  # scan all X coord
         for y in range(scan_tl[1], scan_br[1]):  # scan all Y coord
             if img.item(y, x) == 255 and x < width and y < height:  # checks if the pixel is white or not
@@ -190,6 +187,8 @@ def find_largest_feature(inp_img, scan_tl=None, scan_br=None):
     # show_image(mask)
     return img, np.array(bbox, dtype='float32'), seed_point
 
+##
+##
 
 def extract_digit(img, rect, size):
     """this method will extract digits from the image"""
@@ -243,23 +242,23 @@ def detect_sudoku(sudoku_image):
     # original = cv2.imread('frames/frame.jpg', cv2.IMREAD_GRAYSCALE)
     original = cv2.imread(sudoku_image, cv2.IMREAD_GRAYSCALE)  # read image
     # original = sudoku_image
-    print("original")
-    print(original)
+    #print("original")
+    #print(original)
     processed = pre_process_image(original)  # preprocess the image, gaussian blur, adaptive threshold
-    print("processed")
-    print(processed)
+    #print("processed")
+    #print(processed)
     corners = find_corners_of_largest_polygon(processed)  # find sudoku box, returns corners
-    print("corners")
-    print(corners)
+    #print("corners")
+    #print(corners)
     cropped = crop_and_warp(original, corners)  # crop the sudoku box, change and warp perspective
-    print("cropped")
-    print(cropped)
+    #print("cropped")
+    #print(cropped)
     squares = infer_grid(cropped)  # small grids from the sudoku
-    print("squares")
-    print(squares)
+    #print("squares")
+    #print(squares)
     digits = get_digits(cropped, squares, 32)  # get cleaned digits box
-    print("digit")
-    print(type(digits[0]))
+    #print("digit")
+    #print(type(digits[0]))
     # show_digits(digits)
 
     digits = np.stack(digits)  # change axis of digits

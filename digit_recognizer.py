@@ -58,7 +58,7 @@ for category in CATEGORIES:
         _, resized_array = cv2.threshold(resized_array, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
         resized_array = shift_according_to_center_of_mass(resized_array)
         training_data.append([resized_array, class_num])
-print(len(training_data))
+#print(len(training_data))
 
 random.shuffle(training_data)
 
@@ -99,8 +99,8 @@ model.fit(X_train, y_train,
           validation_data=(X_test, y_test))
 score = model.evaluate(X_test, y_test, verbose=0)
 
-print('Test loss:', score[0])
-print('Test accuracy:', score[1])
+# print('Test loss:', score[0])
+# print('Test accuracy:', score[1])
 
 model.save('models/model2.hdf5')
 #model.save_weights('models/digitRecognition2.h5')
