@@ -5,7 +5,7 @@ from pprint import pprint
 
 def solve_sudoku(size, grid):
     R, C = size
-    N = R * C
+    N = R * C  #9(N) = 3(R)*3(C)
     X = ([("rc", rc) for rc in product(range(N), range(N))] +  # row and column combinations
          [("rn", rn) for rn in product(range(N), range(1, N + 1))] +  # row and number combinations
          [("cn", cn) for cn in product(range(N), range(1, N + 1))] +  # column and number combinations
@@ -20,8 +20,8 @@ def solve_sudoku(size, grid):
     X is dictionary where {('bn', (0, 1)): {(0, 1, 1), (1, 1, 1), (0, 0, 1), (1, 0, 1)}} means 
     for block 0 and number 1 has above row, column, number combinations. 
     """
-    print(len(X))
-    pprint(X)
+    #print(len(X))
+    #pprint(X)
     Y = dict()
     for r, c, n in product(range(N), range(N), range(1, N + 1)):
         b = (r // R) * R + (c // C)  # Box number
@@ -36,10 +36,10 @@ def solve_sudoku(size, grid):
     row 0, col 0 and number 1 can be made from any of the two combinations of values from above.
     """
     X, Y = exact_cover(X, Y)  # this functions creates a exact cover dictionary of the sudoku
-    print("\nX", len(X))
-    pprint(X)
-    print("\nY", len(Y))
-    pprint(Y)
+    #print("\nX", len(X))
+    #pprint(X)
+    #print("\nY", len(Y))
+    #pprint(Y)
 
     """ 
     we will not be changing the values which are already present in the matrix
@@ -55,10 +55,10 @@ def solve_sudoku(size, grid):
             if n:
                 select(X, Y, (i, j, n))
 
-    print("\nX", len(X))
-    pprint(X)
-    print("\nY", len(Y))
-    pprint(Y)
+    # print("\nX", len(X))
+    # pprint(X)
+    # print("\nY", len(Y))
+    # pprint(Y)
 
     """backtracking algorithm X"""
     for solution in solve(X, Y, []):
@@ -86,12 +86,12 @@ def solve(X, Y, solution):
         c = min(X, key=lambda c: len(X[c]))
         """take a value from above X: r"""
         for r in list(X[c]):
-            pprint(solution)
+            #pprint(solution)
             """append r to the solution"""
             solution.append(r)
             """ select r. Y: {r:values}, search for these values in X and remove them from X """
             cols = select(X, Y, r)
-            pprint(cols)
+            #pprint(cols)
             """recursively call the method solve till X is not empty. if X becomes empty than we found a solution """
             for s in solve(X, Y, solution):
                 yield s

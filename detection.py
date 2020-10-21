@@ -222,21 +222,6 @@ def get_digits(img, squares, size):
     return digits
 
 
-def equal_matrices(max_a, max_b):
-    for i in range(81):
-        if max_a[i] != max_b[i]:
-            return False
-    return True
-
-
-def all_board_non_zero(matrix):
-    for i in range(9):
-        for j in range(9):
-            if matrix[i][j] == 0:
-                return False
-    return True
-
-
 def detect_sudoku(sudoku_image):
     print("---------------prev----------")
     # original = cv2.imread('frames/frame.jpg', cv2.IMREAD_GRAYSCALE)
@@ -278,9 +263,9 @@ def detect_sudoku(sudoku_image):
             pred = np.append(pred, 0)
 
     pred = pred.reshape(9, 9)
-    print("pred")
-    print(pred)
-    print(type(digits), type(cropped))
+    #print("pred")
+    #print(pred)
+    #print(type(digits), type(cropped))
     return pred, digits, cropped
 
 
@@ -290,7 +275,7 @@ def get_sudoku(sudoku_image):
     """digits : grids of numbers present in the image, matrix is predicted numbers"""
     matrix, digits, cropped = method_return  # cropped sudoku with changed and warped perspective
     # show_image(digits)
-    print("matrix")
+    #print("matrix")
     matrix = matrix.tolist()
     answer = []
     count = 0
@@ -336,7 +321,7 @@ def run_detection(sudoku_image):
     method_return = get_sudoku(sudoku_image)
     """ans: answer matrix of sudoku, digits: grids of numbers of sudoku"""
     ans, digits, cropped = method_return  # cropped sudoku with changed and warped perspective
-    print(ans)
+    #print(ans)
     answer_matrix = print_solution(digits, cropped, ans)
     """answer_matrix: answered image of sudoku"""
     return answer_matrix
